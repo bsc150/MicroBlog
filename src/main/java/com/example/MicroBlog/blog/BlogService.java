@@ -1,4 +1,5 @@
 package com.example.MicroBlog.blog;
+
 import com.example.MicroBlog.exception.BlogNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -11,14 +12,16 @@ import java.util.Optional;
 @Service
 public class BlogService {
     private final int TRENDING_LIMIT = 10;
+
     @Autowired
     private BlogRepository blogRepository;
 
     public List<Blog> getAllBlogs() {
         List<Blog> blogs = new ArrayList<>();
-        blogRepository.findAll().forEach(b->blogs.add(b));
+        blogRepository.findAll().forEach(b -> blogs.add(b));
         return blogs;
     }
+
     public Blog getBlog(int id) throws BlogNotFoundException {
         Optional<Blog> optionalBlog = blogRepository.findById(id);
         if (optionalBlog.isPresent()) {
@@ -80,6 +83,7 @@ public class BlogService {
         Object[] mostLikedBlogs = blogRepository.findAll(Sort.by(Sort.Direction.DESC, "numLikes")).toArray();
         return firstNBlogs(mostLikedBlogs, TRENDING_LIMIT);
     }
+
     private List<Blog> firstNBlogs(Object[] blogs, int limit) {
         List<Blog> firstBlogs = new ArrayList<>();
         int numBlogs = Math.min(limit, blogs.length);
@@ -92,6 +96,7 @@ public class BlogService {
     private boolean isEmptyDB() {
         return blogRepository.count() == 0;
     }
+
     private String genErrorMessage(int id) {
         return String.format("Blog #%d not found", id);
     }
